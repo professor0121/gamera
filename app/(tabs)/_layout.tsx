@@ -1,13 +1,25 @@
-import { Tabs } from 'expo-router';
+import { Tabs, Redirect } from 'expo-router';
 import React from 'react';
 
 import { HapticTab } from '@/components/haptic-tab';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useOnboardingStore } from '@/hooks/useOnboardingStore';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const { completed, checked } = useOnboardingStore();
+
+  // If onboarding status hasn't been checked yet, render nothing (loading)
+  if (!checked) {
+    return null;
+  }
+
+  // Redirect to onboarding if not completed
+  if (!completed) {
+    return <Redirect href="/onboarding" />;
+  }
 
   return (
     <Tabs
