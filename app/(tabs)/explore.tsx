@@ -72,8 +72,8 @@ export default function ExploreScreen() {
               <Ionicons name="grid-outline" size={24} color={COLORS.TERTIARY} />
               <Text style={[styles.cardTitle, { fontFamily: Fonts.rounded }]}>TIC TAC TOE</Text>
             </View>
-            <View style={[styles.statusBadge, { borderColor: COLORS.TEXT_MUTED }]}>
-              <Text style={[styles.statusText, { color: COLORS.TEXT_MUTED, fontFamily: Fonts.mono }]}>INACTIVE</Text>
+            <View style={[styles.statusBadge, { borderColor: COLORS.TERTIARY }]}>
+              <Text style={[styles.statusText, { color: COLORS.TERTIARY, fontFamily: Fonts.mono }]}>ONLINE</Text>
             </View>
           </View>
           
@@ -92,6 +92,35 @@ export default function ExploreScreen() {
             </View>
           </View>
         </View>
+
+        {/* Cyber Snake Manual Card */}
+        <View style={styles.card}>
+          <View style={styles.cardHeader}>
+            <View style={styles.cardHeaderLeft}>
+              <Ionicons name="git-commit-outline" size={24} color={COLORS.PRIMARY} />
+              <Text style={[styles.cardTitle, { fontFamily: Fonts.rounded }]}>CYBER SNAKE</Text>
+            </View>
+            <View style={[styles.statusBadge, { borderColor: COLORS.PRIMARY }]}>
+              <Text style={[styles.statusText, { color: COLORS.PRIMARY, fontFamily: Fonts.mono }]}>ONLINE</Text>
+            </View>
+          </View>
+          
+          <Text style={[styles.cardDescription, { fontFamily: Fonts.sans }]}>
+            Navigate a trailing vector snake on a neon coordinate grid to harvest data nodes and grow.
+          </Text>
+
+          <View style={styles.controlGrid}>
+            <View style={styles.controlBox}>
+              <Text style={[styles.controlKey, { color: COLORS.PRIMARY, fontFamily: Fonts.mono }]}>DPAD TAP</Text>
+              <Text style={[styles.controlVal, { fontFamily: Fonts.sans }]}>Change direction</Text>
+            </View>
+            <View style={styles.controlBox}>
+              <Text style={[styles.controlKey, { color: COLORS.TEXT_MUTED, fontFamily: Fonts.mono }]}>GROW NODE</Text>
+              <Text style={[styles.controlVal, { fontFamily: Fonts.sans }]}>Eat food nodes</Text>
+            </View>
+          </View>
+        </View>
+
 
         {/* Section: Tech Specs */}
         <Text style={[styles.sectionTitle, { fontFamily: Fonts.rounded }]}>SYSTEM HARDWARE SPECS</Text>

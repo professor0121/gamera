@@ -30,6 +30,7 @@ export default function RootLayout() {
         <Stack.Screen name="onboarding" options={{ headerShown: false }} />
         <Stack.Screen name="games/flappy/index" options={{ headerShown: false }} />
         <Stack.Screen name="games/tictactoe/index" options={{ headerShown: false }} />
+        <Stack.Screen name="games/snake/index" options={{ headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
       </Stack>
       <StatusBar style="auto" />

@@ -46,6 +46,10 @@ export default function HomeScreen() {
     router.push('/games/tictactoe' as Href);
   };
 
+  const launchSnake = () => {
+    router.push('/games/snake' as Href);
+  };
+
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
@@ -127,6 +131,33 @@ export default function HomeScreen() {
             Challenge the smart minimax AI algorithm or play head-to-head with a friend on a sleek neon grid.
           </Text>
           <TouchableOpacity style={[styles.playButton, { backgroundColor: COLORS.ACCENT_CYAN, shadowColor: 'rgba(0, 245, 255, 0.4)' }]} onPress={launchTicTacToe}>
+            <Text style={[styles.playButtonText, { fontFamily: Fonts.rounded, color: COLORS.BACKGROUND }]}>
+              {STRINGS.PLAY_NOW}
+            </Text>
+            <Ionicons name="play-forward" size={16} color={COLORS.BACKGROUND} />
+          </TouchableOpacity>
+        </View>
+
+        {/* Cyber Snake Game Card */}
+        <View style={styles.gameCard}>
+          <View style={[styles.gameCardGlow, { backgroundColor: 'rgba(231, 195, 101, 0.04)' }]} />
+          <View style={styles.cardHeader}>
+            <View style={styles.titleCol}>
+              <Text style={[styles.cardTitle, { fontFamily: Fonts.rounded }]}>
+                CYBER SNAKE
+              </Text>
+              <Text style={[styles.cardSubtitle, { fontFamily: Fonts.sans }]}>
+                Data Infiltration
+              </Text>
+            </View>
+            <View style={[activeBadgeStyles.activeBadge, { backgroundColor: 'rgba(231, 195, 101, 0.1)', borderColor: 'rgba(231, 195, 101, 0.2)' }]}>
+              <Text style={[activeBadgeStyles.activeText, { color: COLORS.TERTIARY, fontFamily: Fonts.mono }]}>NEW</Text>
+            </View>
+          </View>
+          <Text style={[styles.cardDesc, { fontFamily: Fonts.sans }]}>
+            Navigate a trailing vector snake on a neon coordinate grid to harvest data nodes and grow.
+          </Text>
+          <TouchableOpacity style={[styles.playButton, { backgroundColor: COLORS.TERTIARY, shadowColor: 'rgba(231, 195, 101, 0.4)' }]} onPress={launchSnake}>
             <Text style={[styles.playButtonText, { fontFamily: Fonts.rounded, color: COLORS.BACKGROUND }]}>
               {STRINGS.PLAY_NOW}
             </Text>
