@@ -73,3 +73,12 @@ export const STRINGS = {
   CHALLENGE_TITLE: 'Neon Flapping Challenge',
   CHALLENGE_DESC: 'Fly through glowing pipelines in a cyber-punk landscape. Avoid the neon grid!',
 };
+
+export const AD_CONSTANTS = {
+  TITLE: 'SPATIAL RACER NEON',
+  SUBTITLE: 'SPONSORED TRANSMISSION',
+  DESCRIPTION: 'Pre-order the ultimate high-speed hover race. Feel the vector draft, escape the grid, and break the light speed barrier.',
+  CTA: 'INSTALL NOW',
+  COUNTDOWN_DURATION: 3, // seconds before user can close the ad
+};
+

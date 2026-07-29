@@ -42,6 +42,10 @@ export default function HomeScreen() {
     router.push('/games/flappy' as Href);
   };
 
+  const launchTicTacToe = () => {
+    router.push('/games/tictactoe' as Href);
+  };
+
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
@@ -103,42 +107,49 @@ export default function HomeScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* Tic Tac Toe Game Card (Coming Soon/Placeholder) */}
-        <View style={[styles.gameCard, styles.disabledCard]}>
+        {/* Tic Tac Toe Game Card */}
+        <View style={styles.gameCard}>
+          <View style={[styles.gameCardGlow, { backgroundColor: 'rgba(0, 245, 255, 0.04)' }]} />
           <View style={styles.cardHeader}>
             <View style={styles.titleCol}>
-              <Text style={[styles.cardTitle, styles.disabledText, { fontFamily: Fonts.rounded }]}>
+              <Text style={[styles.cardTitle, { fontFamily: Fonts.rounded }]}>
                 TIC TAC TOE
               </Text>
-              <Text style={[styles.cardSubtitle, styles.disabledText, { fontFamily: Fonts.sans }]}>
+              <Text style={[styles.cardSubtitle, { fontFamily: Fonts.sans }]}>
                 Classic Grid Battle
               </Text>
             </View>
-            <View style={comingSoonStyles.comingSoonBadge}>
-              <Text style={[comingSoonStyles.comingSoonText, { fontFamily: Fonts.mono }]}>SOON</Text>
+            <View style={activeBadgeStyles.activeBadge}>
+              <Text style={[activeBadgeStyles.activeText, { fontFamily: Fonts.mono }]}>NEW</Text>
             </View>
           </View>
-          <Text style={[styles.cardDesc, styles.disabledText, { fontFamily: Fonts.sans }]}>
-            Challenge the smart AI engine in a classic neon-glow grid. Coming very soon in the next system update.
+          <Text style={[styles.cardDesc, { fontFamily: Fonts.sans }]}>
+            Challenge the smart minimax AI algorithm or play head-to-head with a friend on a sleek neon grid.
           </Text>
+          <TouchableOpacity style={[styles.playButton, { backgroundColor: COLORS.ACCENT_CYAN, shadowColor: 'rgba(0, 245, 255, 0.4)' }]} onPress={launchTicTacToe}>
+            <Text style={[styles.playButtonText, { fontFamily: Fonts.rounded, color: COLORS.BACKGROUND }]}>
+              {STRINGS.PLAY_NOW}
+            </Text>
+            <Ionicons name="play-forward" size={16} color={COLORS.BACKGROUND} />
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </View>
   );
 }
 
-const comingSoonStyles = StyleSheet.create({
-  comingSoonBadge: {
-    backgroundColor: COLORS.GLASS_FILL,
-    borderColor: COLORS.GLASS_BORDER,
+const activeBadgeStyles = StyleSheet.create({
+  activeBadge: {
+    backgroundColor: 'rgba(0, 245, 255, 0.1)',
+    borderColor: 'rgba(0, 245, 255, 0.2)',
     borderWidth: 1,
     borderRadius: 12,
     paddingHorizontal: 10,
     paddingVertical: 4,
   },
-  comingSoonText: {
+  activeText: {
     fontSize: 10,
-    color: COLORS.TEXT_MUTED,
+    color: COLORS.ACCENT_CYAN,
     fontWeight: 'bold',
   },
 });

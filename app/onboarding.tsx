@@ -14,34 +14,44 @@ import { COLORS } from '@/constants/gameConfig';
 import { Fonts } from '@/constants/theme';
 import { useOnboardingStore } from '@/hooks/useOnboardingStore';
 
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+
 const ONBOARDING_SLIDES = [
   {
-    title: 'WELCOME',
-    subtitle: 'VIVID ARCADE HUB',
-    description: 'Your premium destination for high-fidelity cyber-punk arcade gaming directly on your device.',
+    step: '01 / 04 • INITIALIZING',
+    title: 'VIVID ARCADE',
+    subtitle: 'RETRO FUTURE IS LIVE',
+    description: 'Welcome to the next generation of high-fidelity cyber-punk arcade gaming directly on your device.',
     icon: 'game-controller-outline' as const,
     color: COLORS.PRIMARY,
+    glow: 'rgba(207, 188, 255, 0.25)',
   },
   {
-    title: 'AWESOME GAMES',
-    subtitle: 'CYBER PIPELINES',
-    description: 'Fly through cyber-grid pipelines in Flappy Neon, or challenge smart AIs in classic grid battles.',
+    step: '02 / 04 • SYS LOADING',
+    title: 'NEON PIPELINES',
+    subtitle: 'FLY & DODGE',
+    description: 'Fly through cyber-grid pipelines in Flappy Neon, or challenge smart AIs in our classic board games.',
     icon: 'rocket-outline' as const,
     color: COLORS.ACCENT_CYAN,
+    glow: 'rgba(0, 245, 255, 0.25)',
   },
   {
-    title: 'HIGH SCORES',
-    subtitle: 'GLORY TRACKING',
-    description: 'Your scores, best attempts, and stats are saved locally so you can track your progression.',
+    step: '03 / 04 • LOG DATA',
+    title: 'HIGH GLORY',
+    subtitle: 'PERSONAL BESTS',
+    description: 'Your scores, best attempts, and stats are saved locally so you can track your progression and sys rank.',
     icon: 'trophy-outline' as const,
     color: COLORS.TERTIARY,
+    glow: 'rgba(231, 195, 101, 0.25)',
   },
   {
-    title: 'INFO CENTER',
-    subtitle: 'ARCADE SETTINGS',
-    description: 'Need help or want to review this walkthrough again? Simply tap the Info icon in the dashboard header.',
-    icon: 'information-circle-outline' as const,
+    step: '04 / 04 • ONLINE STATUS',
+    title: 'SYS READINESS',
+    subtitle: 'WALKTHROUGH COMPLETE',
+    description: 'Ready to play? Toggle sounds or haptics anytime inside settings. Let\'s boot up the arcade systems.',
+    icon: 'shield-checkmark-outline' as const,
     color: COLORS.GRADIENT_END,
+    glow: 'rgba(236, 72, 153, 0.25)',
   },
 ];
 
@@ -70,81 +80,96 @@ export default function OnboardingScreen() {
     router.replace('/');
   };
 
+  const activeSlide = ONBOARDING_SLIDES[currentSlide];
+
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
       
-      <View style={styles.overlayContainer}>
-        <View style={styles.glassPanel}>
-          {/* Slide Header */}
-          <Text style={[styles.onboardingTitle, { color: ONBOARDING_SLIDES[currentSlide].color, fontFamily: Fonts.rounded }]}>
-            {ONBOARDING_SLIDES[currentSlide].title}
-          </Text>
-          <Text style={[styles.onboardingSubtitle, { fontFamily: Fonts.sans }]}>
-            {ONBOARDING_SLIDES[currentSlide].subtitle}
-          </Text>
+      {/* Background Neon Glow Blooms */}
+      <View style={[styles.glowBloom1, { backgroundColor: activeSlide.color }]} />
+      <View style={[styles.glowBloom2, { backgroundColor: activeSlide.color }]} />
 
-          {/* Glowing Icon Container */}
-          <View style={[styles.iconContainer, { borderColor: ONBOARDING_SLIDES[currentSlide].color, shadowColor: ONBOARDING_SLIDES[currentSlide].color }]}>
-            <Ionicons 
-              name={ONBOARDING_SLIDES[currentSlide].icon} 
-              size={64} 
-              color={ONBOARDING_SLIDES[currentSlide].color} 
-            />
-          </View>
+      {/* Grid Pattern Overlay */}
+      <View style={styles.gridOverlay} />
 
-          {/* Slide Description */}
-          <Text style={[styles.onboardingDesc, { fontFamily: Fonts.sans }]}>
-            {ONBOARDING_SLIDES[currentSlide].description}
-          </Text>
+      {/* Header Bar */}
+      <View style={styles.header}>
+        <Text style={[styles.stepText, { color: activeSlide.color, fontFamily: Fonts.mono }]}>
+          {activeSlide.step}
+        </Text>
+        {currentSlide < ONBOARDING_SLIDES.length - 1 && (
+          <TouchableOpacity style={styles.skipButton} onPress={handleSkip}>
+            <Text style={[styles.skipButtonText, { fontFamily: Fonts.rounded }]}>SKIP</Text>
+            <Ionicons name="arrow-forward" size={14} color={COLORS.TEXT_MUTED} style={styles.skipIcon} />
+          </TouchableOpacity>
+        )}
+      </View>
 
-          {/* Pagination Dots */}
-          <View style={styles.dotsRow}>
-            {ONBOARDING_SLIDES.map((_, i) => (
-              <View 
-                key={i} 
-                style={[
-                  styles.dot, 
-                  currentSlide === i 
-                    ? { backgroundColor: ONBOARDING_SLIDES[currentSlide].color, width: 20 } 
-                    : { backgroundColor: 'rgba(255, 255, 255, 0.2)' }
-                ]} 
-              />
-            ))}
-          </View>
-
-          {/* Controls Row */}
-          <View style={styles.buttonRow}>
-            {currentSlide > 0 ? (
-              <TouchableOpacity 
-                style={styles.onboardingSecondaryButton} 
-                onPress={handleBack}
-              >
-                <Text style={[styles.secondaryButtonText, { fontFamily: Fonts.rounded }]}>
-                  BACK
-                </Text>
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity 
-                style={styles.onboardingSecondaryButton} 
-                onPress={handleSkip}
-              >
-                <Text style={[styles.secondaryButtonText, { fontFamily: Fonts.rounded, color: COLORS.TEXT_MUTED }]}>
-                  SKIP
-                </Text>
-              </TouchableOpacity>
-            )}
-
-            <TouchableOpacity 
-              style={[styles.onboardingPrimaryButton, { backgroundColor: ONBOARDING_SLIDES[currentSlide].color }]} 
-              onPress={handleNext}
-            >
-              <Text style={[styles.primaryButtonText, { fontFamily: Fonts.rounded, color: COLORS.BACKGROUND }]}>
-                {currentSlide === ONBOARDING_SLIDES.length - 1 ? 'START' : 'NEXT'}
-              </Text>
-            </TouchableOpacity>
+      {/* Content Area */}
+      <View style={styles.content}>
+        {/* Radar Icon Scope */}
+        <View style={[styles.radarOuterRing, { borderColor: activeSlide.color, shadowColor: activeSlide.color }]}>
+          <View style={[styles.radarInnerRing, { borderColor: activeSlide.color }]} />
+          <View style={styles.iconWrapper}>
+            <Ionicons name={activeSlide.icon} size={56} color={activeSlide.color} />
           </View>
         </View>
+
+        {/* Slide Texts */}
+        <View style={styles.textContainer}>
+          <Text style={[styles.slideSubtitle, { color: activeSlide.color, fontFamily: Fonts.sans }]}>
+            {activeSlide.subtitle}
+          </Text>
+          <Text style={[styles.slideTitle, { fontFamily: Fonts.rounded }]}>
+            {activeSlide.title}
+          </Text>
+          <Text style={[styles.slideDescription, { fontFamily: Fonts.sans }]}>
+            {activeSlide.description}
+          </Text>
+        </View>
+      </View>
+
+      {/* Footer Controls */}
+      <View style={styles.footer}>
+        {/* Pagination Dots */}
+        <View style={styles.dotsRow}>
+          {ONBOARDING_SLIDES.map((_, i) => (
+            <View 
+              key={i} 
+              style={[
+                styles.dot, 
+                currentSlide === i 
+                  ? { backgroundColor: activeSlide.color, width: 24 } 
+                  : { backgroundColor: 'rgba(255, 255, 255, 0.15)' }
+              ]} 
+            />
+          ))}
+        </View>
+
+        {/* Primary Action Button */}
+        <TouchableOpacity 
+          style={[styles.primaryButton, { backgroundColor: activeSlide.color, shadowColor: activeSlide.color }]} 
+          onPress={handleNext}
+          activeOpacity={0.8}
+        >
+          <Text style={[styles.primaryButtonText, { fontFamily: Fonts.rounded }]}>
+            {currentSlide === ONBOARDING_SLIDES.length - 1 ? 'BOOT SYSTEMS' : 'CONTINUE'}
+          </Text>
+          <Ionicons 
+            name={currentSlide === ONBOARDING_SLIDES.length - 1 ? 'power' : 'chevron-forward'} 
+            size={18} 
+            color={COLORS.BACKGROUND} 
+            style={styles.btnIcon} 
+          />
+        </TouchableOpacity>
+
+        {/* Back Button (Below Primary) */}
+        {currentSlide > 0 && (
+          <TouchableOpacity style={styles.backButton} onPress={handleBack}>
+            <Text style={[styles.backButtonText, { fontFamily: Fonts.sans }]}>PREVIOUS INDEX</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );
@@ -154,65 +179,137 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.BACKGROUND,
+    justifyContent: 'space-between',
   },
-  overlayContainer: {
+  // Glowing ambient blooms
+  glowBloom1: {
+    position: 'absolute',
+    top: -150,
+    left: -150,
+    width: 350,
+    height: 350,
+    borderRadius: 175,
+    opacity: 0.12,
+    filter: 'blur(80px)',
+  },
+  glowBloom2: {
+    position: 'absolute',
+    bottom: -150,
+    right: -150,
+    width: 350,
+    height: 350,
+    borderRadius: 175,
+    opacity: 0.08,
+    filter: 'blur(80px)',
+  },
+  gridOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    opacity: 0.015,
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: '#FFF',
+    // Mocking grids using relative transparency
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 32,
+    paddingTop: Platform.OS === 'ios' ? 60 : 30,
+    paddingBottom: 16,
+  },
+  stepText: {
+    fontSize: 10,
+    fontWeight: 'bold',
+    letterSpacing: 2,
+  },
+  skipButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.03)',
+    borderColor: COLORS.GLASS_BORDER,
+    borderWidth: 1,
+    borderRadius: 20,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+  },
+  skipButtonText: {
+    fontSize: 11,
+    color: COLORS.TEXT_MUTED,
+    fontWeight: 'bold',
+    letterSpacing: 1,
+  },
+  skipIcon: {
+    marginLeft: 4,
+  },
+  content: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: COLORS.BACKGROUND,
-    padding: 24,
+    paddingHorizontal: 32,
   },
-  glassPanel: {
-    width: '100%',
-    maxWidth: 360,
-    padding: 32,
-    borderRadius: 32,
-    backgroundColor: 'rgba(20, 18, 24, 0.95)',
-    borderColor: COLORS.GLASS_BORDER,
-    borderWidth: 1.5,
-    alignItems: 'center',
-    shadowColor: COLORS.GLASS_GLOW_SHADOW,
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.6,
-    shadowRadius: 20,
-    elevation: 10,
-  },
-  onboardingTitle: {
-    fontSize: 26,
-    fontWeight: '900',
-    letterSpacing: -0.5,
-    textAlign: 'center',
-  },
-  onboardingSubtitle: {
-    fontSize: 11,
-    color: COLORS.TEXT_MUTED,
-    marginTop: 2,
-    marginBottom: 24,
-    textTransform: 'uppercase',
-    letterSpacing: 1.5,
-  },
-  iconContainer: {
-    width: 110,
-    height: 110,
-    borderRadius: 55,
-    borderWidth: 2,
+  // Cyber scope styling
+  radarOuterRing: {
+    width: 160,
+    height: 160,
+    borderRadius: 80,
+    borderWidth: 1,
+    borderStyle: 'dashed',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 24,
-    backgroundColor: 'rgba(255, 255, 255, 0.02)',
+    marginBottom: 48,
+    backgroundColor: 'rgba(255, 255, 255, 0.01)',
     shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.5,
-    shadowRadius: 10,
-    elevation: 4,
+    shadowOpacity: 0.6,
+    shadowRadius: 20,
+    elevation: 6,
   },
-  onboardingDesc: {
-    fontSize: 14,
+  radarInnerRing: {
+    position: 'absolute',
+    width: 130,
+    height: 130,
+    borderRadius: 65,
+    borderWidth: 1.5,
+    opacity: 0.5,
+  },
+  iconWrapper: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: 'rgba(255, 255, 255, 0.02)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  textContainer: {
+    alignItems: 'center',
+    width: '100%',
+  },
+  slideSubtitle: {
+    fontSize: 11,
+    fontWeight: 'bold',
+    letterSpacing: 3,
+    marginBottom: 8,
+    textTransform: 'uppercase',
+  },
+  slideTitle: {
+    fontSize: 32,
+    fontWeight: '900',
     color: COLORS.TEXT_PRIMARY,
+    letterSpacing: -0.5,
+    marginBottom: 16,
     textAlign: 'center',
-    lineHeight: 20,
-    marginBottom: 28,
-    paddingHorizontal: 12,
-    minHeight: 60,
+  },
+  slideDescription: {
+    fontSize: 14,
+    color: COLORS.TEXT_MUTED,
+    textAlign: 'center',
+    lineHeight: 22,
+    paddingHorizontal: 16,
+  },
+  footer: {
+    paddingHorizontal: 32,
+    paddingBottom: Platform.OS === 'ios' ? 44 : 32,
+    alignItems: 'center',
   },
   dotsRow: {
     flexDirection: 'row',
@@ -225,42 +322,35 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     marginHorizontal: 4,
   },
-  buttonRow: {
+  primaryButton: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     width: '100%',
-    gap: 12,
-  },
-  onboardingPrimaryButton: {
-    flex: 1,
-    height: 48,
-    borderRadius: 24,
+    height: 56,
+    borderRadius: 28,
     justifyContent: 'center',
     alignItems: 'center',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.4,
-    shadowRadius: 8,
+    shadowRadius: 10,
     elevation: 4,
   },
-  onboardingSecondaryButton: {
-    flex: 1,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: 'rgba(255, 255, 255, 0.04)',
-    borderColor: COLORS.GLASS_BORDER,
-    borderWidth: 1.5,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   primaryButtonText: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: 'bold',
-    letterSpacing: 1,
+    color: COLORS.BACKGROUND,
+    letterSpacing: 1.5,
   },
-  secondaryButtonText: {
-    fontSize: 16,
+  btnIcon: {
+    marginLeft: 6,
+  },
+  backButton: {
+    marginTop: 16,
+    paddingVertical: 8,
+  },
+  backButtonText: {
+    fontSize: 11,
+    color: COLORS.TEXT_MUTED,
     fontWeight: 'bold',
-    color: COLORS.TEXT_PRIMARY,
     letterSpacing: 1,
   },
 });

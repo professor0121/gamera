@@ -1,8 +1,8 @@
-import { Tabs, Redirect } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
+import { Redirect, Tabs } from 'expo-router';
 import React from 'react';
 
 import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useOnboardingStore } from '@/hooks/useOnboardingStore';
@@ -21,25 +21,57 @@ export default function TabLayout() {
     return <Redirect href="/onboarding" />;
   }
 
+  const activeColor = Colors[colorScheme ?? 'light'].tint;
+
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarActiveTintColor: activeColor,
+        tabBarInactiveTintColor: '#888',
         headerShown: false,
         tabBarButton: HapticTab,
+        tabBarStyle: {
+          backgroundColor: colorScheme === 'dark' ? '#141218' : '#FFF',
+          borderTopColor: 'rgba(255, 255, 255, 0.1)',
+          height: 60,
+          paddingBottom: 8,
+          paddingTop: 8,
+        },
       }}>
       <Tabs.Screen
         name="index"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons size={24} name={focused ? 'home' : 'home-outline'} color={color} />
+          ),
         }}
       />
       <Tabs.Screen
         name="explore"
         options={{
           title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons size={24} name={focused ? 'compass' : 'compass-outline'} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="stats"
+        options={{
+          title: 'Stats',
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons size={24} name={focused ? 'trophy' : 'trophy-outline'} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: 'Settings',
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons size={24} name={focused ? 'settings' : 'settings-outline'} color={color} />
+          ),
         }}
       />
     </Tabs>

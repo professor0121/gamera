@@ -21,6 +21,7 @@ import {
   JumpSystem,
   ObstacleSystem,
 } from './_engine';
+import { AdInterstitial } from '@/components/AdInterstitial';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -29,6 +30,7 @@ type GameState = 'START' | 'PLAYING' | 'PAUSED' | 'GAME_OVER';
 export default function FlappyNeonGame() {
   const router = useRouter();
   const [gameState, setGameState] = useState<GameState>('START');
+  const [showAd, setShowAd] = useState(false);
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
   const gameEngineRef = useRef<any>(null);
@@ -78,6 +80,11 @@ export default function FlappyNeonGame() {
     if (gameEngineRef.current) {
       gameEngineRef.current.swap(setupInitialEntities());
     }
+    setShowAd(true);
+  };
+
+  const handleAdClose = () => {
+    setShowAd(false);
     setGameState('PLAYING');
   };
 
@@ -261,6 +268,9 @@ export default function FlappyNeonGame() {
           </View>
         </View>
       )}
+
+      {/* Ad Interstitial Component */}
+      <AdInterstitial visible={showAd} onClose={handleAdClose} />
     </View>
   );
 }
