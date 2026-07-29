@@ -10,18 +10,24 @@ import {
   Switch,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter, Href } from 'expo-router';
 
 import { COLORS } from '@/constants/gameConfig';
 import { Fonts } from '@/constants/theme';
 import { useOnboardingStore } from '@/hooks/useOnboardingStore';
 
 export default function SettingsScreen() {
+  const router = useRouter();
   const resetOnboarding = useOnboardingStore((state) => state.resetOnboarding);
 
   // Mocked state toggles
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [musicEnabled, setMusicEnabled] = useState(true);
   const [hapticsEnabled, setHapticsEnabled] = useState(true);
+
+  const launchDeveloper = () => {
+    router.push('/developer' as Href);
+  };
 
   return (
     <View style={styles.container}>
@@ -92,6 +98,16 @@ export default function SettingsScreen() {
             <View style={styles.actionButtonLeft}>
               <Ionicons name="help-circle-outline" size={22} color={COLORS.TERTIARY} />
               <Text style={[styles.actionButtonText, { fontFamily: Fonts.sans }]}>Replay Onboarding</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={16} color={COLORS.TEXT_MUTED} />
+          </TouchableOpacity>
+
+          <View style={styles.divider} />
+
+          <TouchableOpacity style={styles.actionButton} onPress={launchDeveloper}>
+            <View style={styles.actionButtonLeft}>
+              <Ionicons name="terminal-outline" size={22} color={COLORS.TERTIARY} />
+              <Text style={[styles.actionButtonText, { fontFamily: Fonts.sans }]}>About Developer</Text>
             </View>
             <Ionicons name="chevron-forward" size={16} color={COLORS.TEXT_MUTED} />
           </TouchableOpacity>

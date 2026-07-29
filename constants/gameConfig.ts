@@ -82,3 +82,22 @@ export const AD_CONSTANTS = {
   COUNTDOWN_DURATION: 3, // seconds before user can close the ad
 };
 
+export const DEV_CONSTANTS = {
+  ALIAS: 'ABHISHEK KUSHWAHA',
+  ROLE: 'CORE NODE ARCHITECT',
+  BIO: 'Designing high-fidelity retro-future gaming systems, rigid-body physics pipelines, and state routing stores.',
+  GITHUB: 'professor0121',
+  EMAIL: 'abhishekkushwahaak0121@gmail.com',
+  GITHUB_URL: 'https://github.com/professor0121',
+  LINKEDIN_URL: 'https://www.linkedin.com/in/abhishek-kushwaha-5a3a49302/',
+  GMAIL_URL: 'mailto:abhishekkushwahaak0121@gmail.com',
+  INSTAGRAM_URL: 'https://instagram.com/abhishek_kushwaha_2706',
+  SKILLS: [
+    { label: 'UI Engineering (React Native)', percentage: 98, color: COLORS.PRIMARY },
+    { label: 'Physics Simulation (Matter.js)', percentage: 92, color: COLORS.ACCENT_CYAN },
+    { label: 'Application State (Zustand)', percentage: 95, color: COLORS.TERTIARY },
+    { label: 'Route Navigation (Expo Router)', percentage: 89, color: COLORS.GRADIENT_END },
+  ]
+};
+
+
