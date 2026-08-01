@@ -20,6 +20,7 @@ import { Fonts } from '@/constants/theme';
 export default function HomeScreen() {
   const router = useRouter();
   const [highScore, setHighScore] = useState(0);
+  const [runnerHighScore, setRunnerHighScore] = useState(0);
 
   // Re-fetch high score whenever screen comes into focus
   useFocusEffect(
@@ -29,6 +30,10 @@ export default function HomeScreen() {
           const stored = await AsyncStorage.getItem(STRINGS.HIGH_SCORE_STORAGE_KEY);
           if (stored !== null) {
             setHighScore(parseInt(stored, 10));
+          }
+          const runnerStored = await AsyncStorage.getItem('@runner_high_score');
+          if (runnerStored !== null) {
+            setRunnerHighScore(parseInt(runnerStored, 10));
           }
         } catch (e) {
           console.error('Failed to load high score', e);
@@ -48,6 +53,10 @@ export default function HomeScreen() {
 
   const launchSnake = () => {
     router.push('/games/snake' as Href);
+  };
+
+  const launchRunner = () => {
+    router.push('/games/runner' as Href);
   };
 
   return (
@@ -162,6 +171,36 @@ export default function HomeScreen() {
               {STRINGS.PLAY_NOW}
             </Text>
             <Ionicons name="play-forward" size={16} color={COLORS.BACKGROUND} />
+          </TouchableOpacity>
+        </View>
+
+        {/* Cyber Runner Game Card */}
+        <View style={styles.gameCard}>
+          <View style={[styles.gameCardGlow, { backgroundColor: 'rgba(236, 72, 153, 0.04)' }]} />
+          <View style={styles.cardHeader}>
+            <View style={styles.titleCol}>
+              <Text style={[styles.cardTitle, { fontFamily: Fonts.rounded }]}>
+                CYBER RUNNER
+              </Text>
+              <Text style={[styles.cardSubtitle, { fontFamily: Fonts.sans }]}>
+                3D-perspective Neon Dash
+              </Text>
+            </View>
+            <View style={styles.statsBadge}>
+              <Ionicons name="trophy" size={14} color="#ec4899" style={styles.badgeIcon} />
+              <Text style={[styles.badgeText, { fontFamily: Fonts.mono, color: '#ec4899' }]}>
+                {String(Math.floor(runnerHighScore)).padStart(4, '0')}
+              </Text>
+            </View>
+          </View>
+          <Text style={[styles.cardDesc, { fontFamily: Fonts.sans }]}>
+            Swipe left/right, jump, and slide to dodge obstacles. Collect coins and charge up powerups in a high-speed grid!
+          </Text>
+          <TouchableOpacity style={[styles.playButton, { backgroundColor: '#ec4899', shadowColor: 'rgba(236, 72, 153, 0.4)' }]} onPress={launchRunner}>
+            <Text style={[styles.playButtonText, { fontFamily: Fonts.rounded, color: '#FFF' }]}>
+              {STRINGS.PLAY_NOW}
+            </Text>
+            <Ionicons name="play-forward" size={16} color="#FFF" />
           </TouchableOpacity>
         </View>
       </ScrollView>

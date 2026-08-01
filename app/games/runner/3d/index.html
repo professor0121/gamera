@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cyber Runner 3D - The Game</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background-color: #030308;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #fff;
+    }
+    canvas {
+      display: block;
+    }
+    #hud-container {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      background: rgba(8, 8, 16, 0.88);
+      border: 1px solid rgba(0, 245, 255, 0.3);
+      border-radius: 10px;
+      padding: 12px 18px;
+      pointer-events: none;
+      box-shadow: 0 0 15px rgba(0, 245, 255, 0.12);
+      min-width: 200px;
+    }
+    #hud-container h2 {
+      font-size: 14px;
+      margin: 0 0 6px 0;
+      color: #ff007f;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+    }
+    #hud-container p {
+      font-size: 13px;
+      margin: 5px 0;
+    }
+    .val {
+      font-weight: bold;
+      color: #00f5ff;
+      float: right;
+    }
+    #overlay-screen {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(4, 4, 8, 0.85);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+      transition: opacity 0.3s ease;
+    }
+    .btn {
+      background: linear-gradient(135deg, #ff007f, #00f5ff);
+      border: none;
+      border-radius: 20px;
+      padding: 10px 28px;
+      font-size: 14px;
+      font-weight: bold;
+      color: #fff;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      box-shadow: 0 0 15px rgba(0, 245, 255, 0.4);
+      margin-top: 15px;
+      pointer-events: auto;
+    }
+    .btn:hover {
+      transform: scale(1.05);
+    }
+    #weather-controls {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      display: flex;
+      gap: 8px;
+    }
+    .weather-btn {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 6px;
+      color: #fff;
+      padding: 6px 12px;
+      font-size: 11px;
+      cursor: pointer;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    .weather-btn:hover {
+      background: rgba(0, 245, 255, 0.25);
+      border-color: #00f5ff;
+    }
+    .pbar {
+      height: 4px;
+      background: rgba(255, 255, 255, 0.15);
+      margin-top: 2px;
+      border-radius: 2px;
+      overflow: hidden;
+      display: none;
+    }
+    .pbar-fill {
+      height: 100%;
+      width: 0%;
+      background: #39ff14;
+    }
+  </style>
+
+  <!-- Import Map -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.180.0/build/three.module.js",
+        "OrbitControls": "https://unpkg.com/three@0.180.0/examples/jsm/controls/OrbitControls.js"
+      }
+    }
+  </script>
+</head>
+<body>
+
+  <!-- Game HUD Overlay -->
+  <div id="hud-container">
+    <h2>Cyber Runner HUD</h2>
+    <p>Score: <span class="val" id="hud-score">0</span></p>
+    <p>Coins: <span class="val" id="hud-coins" style="color:#ffd700;">0</span></p>
+    <p>Speed: <span class="val" id="hud-speed">0.0 m/s</span></p>
+    
+    <div style="margin-top: 8px;" id="shield-row">
+      <p style="font-size:10px; margin:0;">SHIELD ACTIVE</p>
+      <div class="pbar" id="shield-bar" style="display:block;"><div class="pbar-fill" id="shield-fill" style="background:#ff0055;"></div></div>
+    </div>
+    <div style="margin-top: 4px;" id="magnet-row">
+      <p style="font-size:10px; margin:0;">MAGNET ACTIVE</p>
+      <div class="pbar" id="magnet-bar" style="display:block;"><div class="pbar-fill" id="magnet-fill" style="background:#00f5ff;"></div></div>
+    </div>
+    <div style="margin-top: 4px;" id="boost-row">
+      <p style="font-size:10px; margin:0;">BOOST ACTIVE</p>
+      <div class="pbar" id="boost-bar" style="display:block;"><div class="pbar-fill" id="boost-fill" style="background:#39ff14;"></div></div>
+    </div>
+  </div>
+
+  <!-- Style / Weather Cycle Toggles -->
+  <div id="weather-controls">
+    <button class="weather-btn" onclick="setWeather('DAY')">Day</button>
+    <button class="weather-btn" onclick="setWeather('NIGHT')">Night</button>
+    <button class="weather-btn" onclick="setWeather('RAIN')">Rain</button>
+    <button class="weather-btn" onclick="setWeather('SNOW')">Snow</button>
+  </div>
+
+  <!-- Game overlays (Start / Game Over) -->
+  <div id="overlay-screen">
+    <h1 id="overlay-title" style="margin:0 0 10px 0; font-size:28px; text-transform:uppercase; letter-spacing:2px; color:#ff007f;">Cyber Runner</h1>
+    <p id="overlay-desc" style="margin:0 0 15px 0; color:#aaa; font-size:13px; text-align:center;">Swipe or use A/D/W/S keys to change lanes, jump, and slide!</p>
+    <button class="btn" id="overlay-btn" onclick="triggerAction()">Run Now</button>
+  </div>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'OrbitControls';
+    import { HumanPlayer } from './HumanPlayer.js';
+    import { PoolManager } from './PoolManager.js';
+    import { MaterialManager } from './MaterialManager.js';
+    import { GameManager } from './GameManager.js';
+
+    // 1. Setup Three.js Context
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0xbfdfff);
+    scene.fog = new THREE.FogExp2(0xbfdfff, 0.02);
+
+    const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 150);
+    camera.position.set(0, 4.3, 8.2);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    document.body.appendChild(renderer.domElement);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.maxPolarAngle = Math.PI / 2 - 0.05;
+    controls.minDistance = 2.5;
+    controls.maxDistance = 18;
+
+    // 2. Add Lights
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1.3);
+    scene.add(ambientLight);
+
+    const dirLight = new THREE.DirectionalLight(0xffffff, 1.5);
+    dirLight.position.set(-5, 8, -5);
+    dirLight.castShadow = true;
+    dirLight.shadow.mapSize.width = 1024;
+    dirLight.shadow.mapSize.height = 1024;
+    dirLight.shadow.camera.near = 0.5;
+    dirLight.shadow.camera.far = 30;
+    scene.add(dirLight);
+
+    // 3. Instantiate Game elements
+    const player = new HumanPlayer(scene);
+    const pool = new PoolManager(scene);
+    const game = new GameManager(scene, player, pool);
+
+    // Register global actions for inline onclick tags
+    window.setWeather = (mode) => {
+      MaterialManager.setWeatherMode(mode, scene, ambientLight, dirLight);
+    };
+
+    window.triggerAction = () => {
+      if (game.gameState === 'START' || game.gameState === 'GAME_OVER') {
+        game.startGame();
+        document.getElementById('overlay-screen').style.display = 'none';
+      }
+    };
+
+    // Default to Day Weather cycle
+    window.setWeather('DAY');
+
+    // 4. Input Listeners
+    window.addEventListener('keydown', (e) => {
+      if (game.gameState !== 'PLAYING') return;
+      const key = e.key.toLowerCase();
+      if (key === 'a' || e.keyCode === 37) player.moveLeft();
+      else if (key === 'd' || e.keyCode === 39) player.moveRight();
+      else if (key === 'w' || key === ' ' || e.keyCode === 38) player.jump();
+      else if (key === 's' || e.keyCode === 40) player.slide();
+    });
+
+    // 5. Game Update and Render Loop
+    let clock = new THREE.Clock();
+
+    function animate() {
+      requestAnimationFrame(animate);
+      const delta = Math.min(clock.getDelta(), 0.1); // cap delta spike
+
+      if (game.gameState === 'PLAYING') {
+        // Run GameManager tick
+        game.update(delta);
+        
+        // Update falling rain/snow particle animations
+        MaterialManager.updateWeather(delta, player.position.z);
+
+        camera.position.set(0, 4.3, player.position.z + 8.2);
+        camera.lookAt(0, 0.8, player.position.z - 1.8);
+
+        dirLight.position.set(-5, 8, player.position.z - 5);
+        dirLight.target = player.mesh;
+
+        // Render HUD variables
+        document.getElementById('hud-score').textContent = game.score;
+        document.getElementById('hud-coins').textContent = game.coins;
+        document.getElementById('hud-speed').textContent = game.currentSpeed.toFixed(1) + ' m/s';
+
+        // Update Power-Ups duration bar fills
+        updatePowerupBar('shield-fill', game.shieldTime);
+        updatePowerupBar('magnet-fill', game.magnetTime);
+        updatePowerupBar('boost-fill', game.jetpackTime);
+
+      } else if (game.gameState === 'GAME_OVER') {
+        // Exits loop, displays Restart UI Overlay
+        document.getElementById('overlay-screen').style.display = 'flex';
+        document.getElementById('overlay-title').textContent = 'Crash! Game Over';
+        document.getElementById('overlay-desc').innerHTML = `Final Score: <b>${game.score}</b><br>Collected Coins: <b>${game.coins}</b>`;
+        document.getElementById('overlay-btn').textContent = 'Restart Run';
+      }
+
+      if (game.gameState !== 'PLAYING') {
+        controls.update();
+      }
+      renderer.render(scene, camera);
+    }
+
+    function updatePowerupBar(id, val) {
+      const fill = document.getElementById(id);
+      if (val > 0) {
+        fill.parentElement.style.display = 'block';
+        fill.style.width = (val / 9.0) * 100 + '%'; // 9 sec duration
+      } else {
+        fill.parentElement.style.display = 'none';
+      }
+    }
+
+    function lerp(start, end, amt) {
+      return (1 - amt) * start + amt * end;
+    }
+
+    animate();
+
+    // 6. Handle viewport scaling
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
+</html>
